@@ -19,7 +19,23 @@
 
 #define PORT 9876
 
-#define CON_CHECK_INTERVAL 1000 //ms
+#define CON_CHECK_INTERVAL 500 //ms
+
+#define SERVO_EXPO 50
+#define SPEED_EXPO 80
+
+// H-bridge gpios
+#define H_BCK_PIN 13
+#define H_FWD_PIN 14
+#define H_PWM_PIN 5
+
+#define BAT_CHECK_PIN 12
+#define BAT_CHECK_INTERVAL 100 //ms
+#define BAT_CHECK_MAX_CNT  10
+
+#define SERVO_PIN 4
+
+#define LED_PIN 2
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
 
@@ -27,25 +43,36 @@ enum {
 	UNKNOWN = -1,
 
 	SERVO,
-	SERVO_EXP,
 	SPEED,
+	BRAKE,
 
 };
 
 typedef struct {
-	char *roboremo_id;
 	int16_t min;
 	int16_t max;
 	int16_t val;
+} ctrl_param_t;
+
+typedef struct {
+	char *roboremo_id;
+	ctrl_param_t *param;
 } ctrl_t;
 
+
+ctrl_param_t servo_param = {-100, 100, 0};
+ctrl_param_t speed_param = {-100, 100, 0};
+
 ctrl_t controls[] = {
-	[SERVO] =		{"servo", -100, 100, 0},
-	[SERVO_EXP] =	{"servo_exp", 0, 10, 0},
-	[SPEED] =		{"speed", -100, 100, 0},
+	[SERVO] =		{"servo", &servo_param},
+	[SPEED] =		{"speed", &speed_param},
+	[BRAKE] =		{"brake", NULL},
 };
 
-#define servo_exp (controls[SERVO_EXP].val)
+#define CTRL_VAL(x) (controls[x].param->val)
+
+#define servo_val		(CTRL_VAL(SERVO))
+#define speed_val		(CTRL_VAL(SPEED))
 
 Servo servo;
 
@@ -131,6 +158,11 @@ void setup()
 	Serial.println("ESP8266 RC receiver (UDP) 1.0 powered by RoboRemo");
 	Serial.println((String)"SSID: " + WIFI_SSID + "  PASS: " + WIFI_PSK);
 	Serial.println((String)"RoboRemo app must connect to " + ip.toString() + ":" + PORT);
+
+	pinMode(LED_PIN, OUTPUT);
+	digitalWrite(LED_PIN, HIGH);
+
+	pinMode(BAT_CHECK_PIN, INPUT_PULLUP);
 }
 
 ctrl_t *get_ctrl(int id)
@@ -148,22 +180,88 @@ int parse_pkt(char *pkt_buf)
 
 	for (i = 0; i < ARRAY_SIZE(controls); i++) {
 		if (!strncmp(pkt_buf, controls[i].roboremo_id, strlen(controls[i].roboremo_id))
-				&& pkt_buf[strlen(controls[i].roboremo_id)] == ' ') {
+				&& (!controls[i].param || pkt_buf[strlen(controls[i].roboremo_id)] == ' ')) {
 
-			int val = atoi(pkt_buf + strlen(controls[i].roboremo_id));
-			if (val < controls[i].min || val > controls[i].max)
-				return UNKNOWN;
+			if (controls[i].param) {
 
-			if (controls[i].val == val)
-				return UNKNOWN;
+				int val = atoi(pkt_buf + strlen(controls[i].roboremo_id));
+				if (val < controls[i].param->min || val > controls[i].param->max)
+					return UNKNOWN;
 
-			controls[i].val = val;
+				if (controls[i].param->val == val)
+					return UNKNOWN;
+
+				controls[i].param->val = val;
+			}
 
 			return i;
 		}
 	}
 
 	return UNKNOWN;
+}
+
+void motor_set(int16_t val)
+{
+	val = calc100toRESX(val);
+
+	if (val < 0) {
+		val = -val;
+		digitalWrite(H_FWD_PIN, LOW);
+		digitalWrite(H_BCK_PIN, HIGH);
+	}
+	else if (val > 0) {
+		digitalWrite(H_FWD_PIN, HIGH);
+		digitalWrite(H_BCK_PIN, LOW);
+	}
+	else {
+		digitalWrite(H_FWD_PIN, LOW);
+		digitalWrite(H_BCK_PIN, LOW);
+	}
+
+	val = expo(val, SPEED_EXPO);
+
+	if (val > 1023)
+		val = 1023;
+
+	analogWrite(H_PWM_PIN, 1023 - val);
+}
+
+void motor_brake(void)
+{
+	digitalWrite(H_FWD_PIN, LOW);
+	digitalWrite(H_BCK_PIN, LOW);
+	digitalWrite(H_PWM_PIN, LOW);
+}
+
+void motor_init(void)
+{
+	pinMode(H_FWD_PIN, OUTPUT);
+	digitalWrite(H_FWD_PIN, LOW);
+
+	pinMode(H_BCK_PIN, OUTPUT);
+	digitalWrite(H_BCK_PIN, LOW);
+
+	pinMode(H_PWM_PIN, OUTPUT);
+	digitalWrite(H_PWM_PIN, LOW);
+}
+
+void servo_set(int16_t val)
+{
+	val = ((calcRESX1000(expo(calc100toRESX(val), SERVO_EXPO)) + 1000) >> 1) + 1000;
+	servo.writeMicroseconds(val);
+}
+
+void servo_stop(void)
+{
+	servo.detach();
+	pinMode(SERVO_PIN, OUTPUT);
+	digitalWrite(SERVO_PIN, LOW);
+}
+
+void servo_init(void)
+{
+	servo.attach(SERVO_PIN, 1000, 2000);
 }
 
 enum {
@@ -176,29 +274,71 @@ int con_state = CON_FAIL;
 
 void start_ctrl(void)
 {
-	Serial.printf("start\n");
-	servo.attach(4, 1000, 2000);
+	Serial.printf("start ctrl\n");
 
+	servo_init();
+	motor_init();
 }
 
 void stop_ctrl(void)
 {
-	Serial.print("stop\n");
-	servo.detach();
+	Serial.print("stop ctrl\n");
+
+	servo_stop();
+	motor_brake();
 }
 
 
 void loop()
 {
-	static int last_time = 0;
+	static int bat_check_cnt = 0;
+	static int bat_last_time = 0;
+	int bat_now_time = millis();
+	if (bat_now_time - bat_last_time > BAT_CHECK_INTERVAL) {
+		bat_last_time = bat_now_time;
+
+		if (bat_check_cnt == BAT_CHECK_MAX_CNT) {
+			servo_stop();
+			motor_brake();
+			//WiFi.softAPdisconnect(true);
+			WiFi.mode(WIFI_OFF);
+			WiFi.forceSleepBegin();
+
+			bat_check_cnt++;
+		}
+
+		if (bat_check_cnt >= BAT_CHECK_MAX_CNT) {
+			static int bat_led_cnt = 0;
+			
+			if (bat_led_cnt == 0)
+				digitalWrite(LED_PIN, LOW);
+			else
+				digitalWrite(LED_PIN, HIGH);
+			
+			if (++bat_led_cnt >= 20)
+				bat_led_cnt = 0;
+
+			return;
+		}
+
+		if (digitalRead(BAT_CHECK_PIN) == HIGH)
+			bat_check_cnt++;
+		else
+			bat_check_cnt = 0;
+	}
+	if (bat_check_cnt >= BAT_CHECK_MAX_CNT)
+		return;
+
+
+	static int con_last_time = 0;
 	static bool data_available = false;
 
-	int now_time = millis();
-	if (now_time - last_time > CON_CHECK_INTERVAL) {
+	int con_now_time = millis();
+	if (con_now_time - con_last_time > CON_CHECK_INTERVAL) {
 
 		//Serial.print("check connection\n");
 
-		last_time = now_time;
+		con_last_time = con_now_time;
 
 		static int last_sta_num = 0;
 		int cur_sta_num = WiFi.softAPgetStationNum();
@@ -234,6 +374,17 @@ void loop()
 			last_data_available = data_available;
 			data_available = false;
 		}
+		
+		static int con_led_cnt = 0;
+		if (con_state != CON_WIFI_DATA) {
+			if (con_led_cnt == 0)
+				digitalWrite(LED_PIN, HIGH);
+			else
+				digitalWrite(LED_PIN, LOW);
+			con_led_cnt = !con_led_cnt;
+		}
+		else 
+			digitalWrite(LED_PIN, LOW);
 	}
 
 	if (con_state == CON_FAIL)
@@ -257,36 +408,27 @@ void loop()
 			int id = parse_pkt(pkt_buf);
 			ctrl_t *ctrl = get_ctrl(id);
 
-			if (ctrl)
-				Serial.printf("ctrl: \"%s\" val: %d\n", ctrl->roboremo_id, ctrl->val);
+			if (ctrl) {
+				Serial.printf("ctrl: \"%s\"", ctrl->roboremo_id);
+				if (ctrl->param)
+					Serial.printf("val: %d", ctrl->param->val);
+				Serial.printf("\n");
+			}
 
 			int16_t servo_val;
 
 			switch (id) {
 				case SERVO:
-					servo_val = ((calcRESX1000(expo(calc100toRESX(ctrl->val), servo_exp * 10)) + 1000) >> 1) + 1000;
-					Serial.printf("servo_val: %d\n", servo_val);
-					servo.writeMicroseconds(servo_val);
-				break;
-				case SERVO_EXP:
+					servo_set(servo_val);
 				break;
 				case SPEED:
+					motor_set(speed_val);
+				break;
+				case BRAKE:
+					if (speed_val == 0)
+						motor_brake();
 				break;
 			}
 		}
-
-
 	}
-
-#if 0
-  if(millis() - aliveSentTime > 500) { // every 500ms
-    client.write("alive 1\n");
-    // send the alibe signal, so the "connected" LED in RoboRemo will stay ON
-    // (the LED must have the id set to "alive")
-    
-    aliveSentTime = millis();
-    // if the connection is lost, the RoboRemo will not receive the alive signal anymore,
-    // and the LED will turn off (because it has the "on timeout" set to 700 (ms) )
-  }
-#endif
 }
