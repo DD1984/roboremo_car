@@ -1,41 +1,24 @@
-// 4-channel RC receiver for controlling
-// an RC car / boat / plane / quadcopter / etc.
-// using an ESP8266 and an Android phone with RoboRemo app
-
-// Disclaimer: Don't use RoboRemo for life support systems
-// or any other situations where system failure may affect
-// user or environmental safety.
+/*
+ * RC receiver for controlling RC car:
+ * - servo
+ * - motor with brake - H-bridge, controlled by esp8266
+ * using an ESP8266 and an Android phone with RoboRemo app
+ * 
+ * are used:
+ * - UDP connection for minimal delay
+ * - exponential regulation for best precision of control
+ * - battery voltage check for save li-po
+ * - connection check for safe use
+ */
 
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <WiFiUdp.h>
-#include <Servo.h>
 
-#define RESXu 1024u
-
-#define WIFI_SSID "mywifi"
-#define WIFI_PSK ""
-#define WIFI_CHANNEL 1
-
-#define PORT 9876
-
-#define CON_CHECK_INTERVAL 500 //ms
-
-#define SERVO_EXPO 50
-#define SPEED_EXPO 80
-
-// H-bridge gpios
-#define H_BCK_PIN 13
-#define H_FWD_PIN 14
-#define H_PWM_PIN 5
-
-#define BAT_CHECK_PIN 12
-#define BAT_CHECK_INTERVAL 100 //ms
-#define BAT_CHECK_MAX_CNT  10
-
-#define SERVO_PIN 4
-
-#define LED_PIN 2
+#include "defs.h"
+#include "expo.h"
+#include "servo_ctrl.h"
+#include "motor_ctrl.h"
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
 
@@ -45,7 +28,6 @@ enum {
 	SERVO,
 	SPEED,
 	BRAKE,
-
 };
 
 typedef struct {
@@ -74,72 +56,8 @@ ctrl_t controls[] = {
 #define servo_val		(CTRL_VAL(SERVO))
 #define speed_val		(CTRL_VAL(SPEED))
 
-Servo servo;
-
 WiFiUDP udp;
 
-int16_t calc100to256(int8_t x) // return x*2.56
-{
-  return ((int16_t)x << 1) + (x >> 1) + (x >> 4);
-}
-
-int16_t calc100toRESX(int8_t x) // return x*10.24
-{
-	int16_t res = ((int16_t)x * 41) >> 2;
-	int8_t sign = x < 0 ? 1 : 0;
-	x -= sign;
-	res -= x >> 6;
-	res -= sign;
-
-	return res;
-}
-
-int16_t calcRESX1000(int16_t x)  // return x/1.024
-{
-// *1000/1024 = x - x/32 + x/128
-	return x - (x >> 5) + (x >> 7);
-}
-
-// input parameters;
-//  x 0 to 1024;
-//  k 0 to 100;
-// output between 0 and 1024
-unsigned int expou(unsigned int x, unsigned int k)
-{
-	k = calc100to256(k);
-
-	uint32_t value = (uint32_t) x * x;
-	value *= (uint32_t)k;
-	value >>= 8;
-	value *= (uint32_t)x;
-
-	value >>= 12;
-	value += (uint32_t)(256 - k) * x + 128;
-
-	return value >> 8;
-}
-
-int expo(int x, int k)
-{
-	if (k == 0)
-		return x;
-
-	int y;
-	bool neg = (x < 0);
-
-	if (neg)
-		x = -x;
-
-	if (x > (int)RESXu)
-		x = RESXu;
-
-	if (k < 0)
-		y = RESXu - expou(RESXu - x, -k);
-	else
-		y = expou(x, k);
-
-	return neg ? -y : y;
-}
 
 void setup()
 {
@@ -147,7 +65,7 @@ void setup()
 
 	Serial.begin(115200);
 
-	IPAddress ip(192, 168, 0, 1); // From RoboRemo app, connect to this IP
+	IPAddress ip(192, 168, 0, 1);
 	IPAddress netmask(255, 255, 255, 0);
 
 	WiFi.softAPConfig(ip, ip, netmask);
@@ -199,69 +117,6 @@ int parse_pkt(char *pkt_buf)
 	}
 
 	return UNKNOWN;
-}
-
-void motor_set(int16_t val)
-{
-	val = calc100toRESX(val);
-
-	if (val < 0) {
-		val = -val;
-		digitalWrite(H_FWD_PIN, LOW);
-		digitalWrite(H_BCK_PIN, HIGH);
-	}
-	else if (val > 0) {
-		digitalWrite(H_FWD_PIN, HIGH);
-		digitalWrite(H_BCK_PIN, LOW);
-	}
-	else {
-		digitalWrite(H_FWD_PIN, LOW);
-		digitalWrite(H_BCK_PIN, LOW);
-	}
-
-	val = expo(val, SPEED_EXPO);
-
-	if (val > 1023)
-		val = 1023;
-
-	analogWrite(H_PWM_PIN, 1023 - val);
-}
-
-void motor_brake(void)
-{
-	digitalWrite(H_FWD_PIN, LOW);
-	digitalWrite(H_BCK_PIN, LOW);
-	digitalWrite(H_PWM_PIN, LOW);
-}
-
-void motor_init(void)
-{
-	pinMode(H_FWD_PIN, OUTPUT);
-	digitalWrite(H_FWD_PIN, LOW);
-
-	pinMode(H_BCK_PIN, OUTPUT);
-	digitalWrite(H_BCK_PIN, LOW);
-
-	pinMode(H_PWM_PIN, OUTPUT);
-	digitalWrite(H_PWM_PIN, LOW);
-}
-
-void servo_set(int16_t val)
-{
-	val = ((calcRESX1000(expo(calc100toRESX(val), SERVO_EXPO)) + 1000) >> 1) + 1000;
-	servo.writeMicroseconds(val);
-}
-
-void servo_stop(void)
-{
-	servo.detach();
-	pinMode(SERVO_PIN, OUTPUT);
-	digitalWrite(SERVO_PIN, LOW);
-}
-
-void servo_init(void)
-{
-	servo.attach(SERVO_PIN, 1000, 2000);
 }
 
 enum {
