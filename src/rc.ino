@@ -195,8 +195,6 @@ void loop()
 				Serial.printf("\n");
 			}
 
-			int16_t servo_val;
-
 			switch (id) {
 				case SERVO:
 					servo_set(servo_val);
