@@ -1,4 +1,5 @@
 #ifndef __DEFS_H__
+#define __DEFS_H__
 
 #define WIFI_SSID "mywifi"
 #define WIFI_PSK ""

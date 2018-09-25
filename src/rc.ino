@@ -16,6 +16,7 @@
 #include <WiFiUdp.h>
 
 #include "defs.h"
+#include "con_check.h"
 #include "expo.h"
 #include "servo_ctrl.h"
 #include "motor_ctrl.h"
@@ -58,10 +59,22 @@ ctrl_t controls[] = {
 
 WiFiUDP udp;
 
-void bat_low_action(void)
+void start_ctrl(void)
+{
+	servo_init();
+	motor_init();
+}
+
+void stop_ctrl(void)
 {
 	servo_stop();
 	motor_brake();
+}
+
+void bat_low_action(void)
+{
+	stop_ctrl();
+
 	//WiFi.softAPdisconnect(true);
 	WiFi.mode(WIFI_OFF);
 	WiFi.forceSleepBegin();
@@ -69,10 +82,28 @@ void bat_low_action(void)
 	led_set_seq(LED_BAT_LOW);
 }
 
+void con_change_action(void)
+{
+	int state = get_con_state();
+	switch (state) {
+		case CON_FAIL:
+			led_set_seq(LED_CON_FAIL);
+			stop_ctrl();
+		break;
+		case CON_WIFI:
+			led_set_seq(LED_CON_WIFI);
+			stop_ctrl();
+		break;
+		case CON_WIFI_DATA:
+			led_set_seq(LED_CON_WIFI_DATA);
+			start_ctrl();
+
+		break;
+	}
+}
+
 void setup()
 {
-	delay(1000);
-
 	Serial.begin(115200);
 
 	IPAddress ip(192, 168, 0, 1);
@@ -91,6 +122,8 @@ void setup()
 	led_set_seq(LED_CON_FAIL);
 
 	bat_init(bat_low_action);
+
+	init_con_check(con_change_action);
 }
 
 ctrl_t *get_ctrl(int id)
@@ -129,100 +162,12 @@ int parse_pkt(char *pkt_buf)
 	return UNKNOWN;
 }
 
-enum {
-	CON_FAIL,
-	CON_WIFI,
-	CON_WIFI_DATA,
-};
-
-int con_state = CON_FAIL;
-
-void set_con_state(int state)
-{
-	con_state = state;
-
-	switch (con_state) {
-		case CON_FAIL:
-			led_set_seq(LED_CON_FAIL);
-		break;
-		case CON_WIFI:
-			led_set_seq(LED_CON_WIFI);
-		break;
-		case CON_WIFI_DATA:
-			led_set_seq(LED_CON_WIFI_DATA);
-		break;
-	}
-}
-
-void start_ctrl(void)
-{
-	Serial.printf("start ctrl\n");
-
-	servo_init();
-	motor_init();
-}
-
-void stop_ctrl(void)
-{
-	Serial.print("stop ctrl\n");
-
-	servo_stop();
-	motor_brake();
-}
-
-
 void loop()
 {
 	if (bat_is_low())
 		return;
 
-	static int con_last_time = 0;
-	static bool data_available = false;
-
-	int con_now_time = millis();
-	if (con_now_time - con_last_time > CON_CHECK_INTERVAL) {
-
-		//Serial.print("check connection\n");
-
-		con_last_time = con_now_time;
-
-		static int last_sta_num = 0;
-		int cur_sta_num = WiFi.softAPgetStationNum();
-
-		if (cur_sta_num > 0 && last_sta_num == 0) {
-			Serial.print("client connected\n");
-			set_con_state(CON_WIFI);
-		}
-		if (cur_sta_num == 0 && last_sta_num > 0) {
-			Serial.print("client disconnected\n");
-			if (con_state == CON_WIFI_DATA)
-				stop_ctrl();
-			set_con_state(CON_FAIL);
-		}
-
-		last_sta_num = cur_sta_num;
-
-		if (con_state != CON_FAIL) {
-			static bool last_data_available = false;
-
-			if (con_state == CON_WIFI && !last_data_available && data_available) {
-				Serial.print("client data available\n");
-				set_con_state(CON_WIFI_DATA);
-				start_ctrl();
-			}
-
-			if (con_state == CON_WIFI_DATA && last_data_available && !data_available) {
-				Serial.print("client data timeot expired\n");
-				set_con_state(CON_WIFI);
-				stop_ctrl();
-			}
-
-			last_data_available = data_available;
-			data_available = false;
-		}
-	}
-
-	if (con_state == CON_FAIL)
+	if (get_con_state() == CON_FAIL)
 		return;
 
 	int pkt_size = udp.parsePacket();
@@ -233,9 +178,9 @@ void loop()
 		if (len > 0) {
 			//Serial.printf("UDP packet contents: %s\n", pkt_buf);
 
-			data_available = true;
+			network_data_available();
 
-			if (con_state == CON_WIFI)
+			if (get_con_state() == CON_WIFI)
 				return;
 
 			pkt_buf[len] = 0;
