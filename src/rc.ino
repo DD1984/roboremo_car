@@ -162,8 +162,6 @@ void stop_ctrl(void)
 
 void loop()
 {
-	led_periodic();
-
 	static int bat_check_cnt = 0;
 	static int bat_last_time = 0;
 	int bat_now_time = millis();

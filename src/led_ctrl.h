@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 struct led_seq_s {
-	unsigned long *arr;
+	unsigned long *arr; //periods in ms (with 10ms resolution)
 	int size;
 };
 
@@ -20,8 +20,6 @@ EXPORT_SEQ(led_bat_low);
 #define LED_CON_WIFI_DATA &led_con_wifi_data
 #define LED_BAT_LOW &led_bat_low
 
-void led_ctrl(bool first_step);
-#define led_periodic() led_ctrl(false)
 void led_set_seq(struct led_seq_s *s);
 void led_init(void);
 

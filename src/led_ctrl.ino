@@ -1,11 +1,9 @@
 #include <stdbool.h>
+#include <Arduino.h>
+#include <Ticker.h>
 
 #include "led_ctrl.h"
 #include "defs.h"
-
-struct led_seq_s *led_cur_seq = NULL;
-struct led_seq_s *led_new_seq = NULL;
-
 
 #define REG_SEQ(name) struct led_seq_s name = {name##_arr, ARRAY_SIZE(name##_arr)}
 
@@ -22,6 +20,11 @@ REG_SEQ(led_con_wifi_data);
 unsigned long led_bat_low_arr[] = {50, 1450};
 REG_SEQ(led_bat_low);
 
+
+Ticker led_ticker;
+
+struct led_seq_s *led_cur_seq = NULL;
+struct led_seq_s *led_new_seq = NULL;
 
 void led_ctrl(bool first_step)
 {
@@ -66,4 +69,6 @@ void led_init(void)
 {
 	pinMode(LED_PIN, OUTPUT);
 	digitalWrite(LED_PIN, HIGH);
+
+	led_ticker.attach_ms(10, led_ctrl, false);
 }
