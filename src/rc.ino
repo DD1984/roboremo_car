@@ -19,8 +19,7 @@
 #include "expo.h"
 #include "servo_ctrl.h"
 #include "motor_ctrl.h"
-
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
+#include "led_ctrl.h"
 
 enum {
 	UNKNOWN = -1,
@@ -77,8 +76,8 @@ void setup()
 	Serial.println((String)"SSID: " + WIFI_SSID + "  PASS: " + WIFI_PSK);
 	Serial.println((String)"RoboRemo app must connect to " + ip.toString() + ":" + PORT);
 
-	pinMode(LED_PIN, OUTPUT);
-	digitalWrite(LED_PIN, HIGH);
+	led_init();
+	led_set_seq(LED_CON_FAIL);
 
 	pinMode(BAT_CHECK_PIN, INPUT_PULLUP);
 }
@@ -127,6 +126,23 @@ enum {
 
 int con_state = CON_FAIL;
 
+void set_con_state(int state)
+{
+	con_state = state;
+
+	switch (con_state) {
+		case CON_FAIL:
+			led_set_seq(LED_CON_FAIL);
+		break;
+		case CON_WIFI:
+			led_set_seq(LED_CON_WIFI);
+		break;
+		case CON_WIFI_DATA:
+			led_set_seq(LED_CON_WIFI_DATA);
+		break;
+	}
+}
+
 void start_ctrl(void)
 {
 	Serial.printf("start ctrl\n");
@@ -146,6 +162,8 @@ void stop_ctrl(void)
 
 void loop()
 {
+	led_periodic();
+
 	static int bat_check_cnt = 0;
 	static int bat_last_time = 0;
 	int bat_now_time = millis();
@@ -160,21 +178,12 @@ void loop()
 			WiFi.forceSleepBegin();
 
 			bat_check_cnt++;
+
+			led_set_seq(LED_BAT_LOW);
 		}
 
-		if (bat_check_cnt >= BAT_CHECK_MAX_CNT) {
-			static int bat_led_cnt = 0;
-			
-			if (bat_led_cnt == 0)
-				digitalWrite(LED_PIN, LOW);
-			else
-				digitalWrite(LED_PIN, HIGH);
-			
-			if (++bat_led_cnt >= 20)
-				bat_led_cnt = 0;
-
+		if (bat_check_cnt >= BAT_CHECK_MAX_CNT)
 			return;
-		}
 
 		if (digitalRead(BAT_CHECK_PIN) == HIGH)
 			bat_check_cnt++;
@@ -200,13 +209,13 @@ void loop()
 
 		if (cur_sta_num > 0 && last_sta_num == 0) {
 			Serial.print("client connected\n");
-			con_state = CON_WIFI;
+			set_con_state(CON_WIFI);
 		}
 		if (cur_sta_num == 0 && last_sta_num > 0) {
 			Serial.print("client disconnected\n");
 			if (con_state == CON_WIFI_DATA)
 				stop_ctrl();
-			con_state = CON_FAIL;
+			set_con_state(CON_FAIL);
 		}
 
 		last_sta_num = cur_sta_num;
@@ -216,30 +225,19 @@ void loop()
 
 			if (con_state == CON_WIFI && !last_data_available && data_available) {
 				Serial.print("client data available\n");
-				con_state = CON_WIFI_DATA;
+				set_con_state(CON_WIFI_DATA);
 				start_ctrl();
 			}
 
 			if (con_state == CON_WIFI_DATA && last_data_available && !data_available) {
 				Serial.print("client data timeot expired\n");
-				con_state = CON_WIFI;
+				set_con_state(CON_WIFI);
 				stop_ctrl();
 			}
 
 			last_data_available = data_available;
 			data_available = false;
 		}
-		
-		static int con_led_cnt = 0;
-		if (con_state != CON_WIFI_DATA) {
-			if (con_led_cnt == 0)
-				digitalWrite(LED_PIN, HIGH);
-			else
-				digitalWrite(LED_PIN, LOW);
-			con_led_cnt = !con_led_cnt;
-		}
-		else 
-			digitalWrite(LED_PIN, LOW);
 	}
 
 	if (con_state == CON_FAIL)

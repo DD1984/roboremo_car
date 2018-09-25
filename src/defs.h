@@ -24,4 +24,6 @@
 
 #define LED_PIN 2
 
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
+
 #endif
