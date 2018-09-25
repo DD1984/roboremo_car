@@ -20,6 +20,7 @@
 #include "servo_ctrl.h"
 #include "motor_ctrl.h"
 #include "led_ctrl.h"
+#include "bat_check.h"
 
 enum {
 	UNKNOWN = -1,
@@ -57,6 +58,16 @@ ctrl_t controls[] = {
 
 WiFiUDP udp;
 
+void bat_low_action(void)
+{
+	servo_stop();
+	motor_brake();
+	//WiFi.softAPdisconnect(true);
+	WiFi.mode(WIFI_OFF);
+	WiFi.forceSleepBegin();
+
+	led_set_seq(LED_BAT_LOW);
+}
 
 void setup()
 {
@@ -79,7 +90,7 @@ void setup()
 	led_init();
 	led_set_seq(LED_CON_FAIL);
 
-	pinMode(BAT_CHECK_PIN, INPUT_PULLUP);
+	bat_init(bat_low_action);
 }
 
 ctrl_t *get_ctrl(int id)
@@ -162,35 +173,8 @@ void stop_ctrl(void)
 
 void loop()
 {
-	static int bat_check_cnt = 0;
-	static int bat_last_time = 0;
-	int bat_now_time = millis();
-	if (bat_now_time - bat_last_time > BAT_CHECK_INTERVAL) {
-		bat_last_time = bat_now_time;
-
-		if (bat_check_cnt == BAT_CHECK_MAX_CNT) {
-			servo_stop();
-			motor_brake();
-			//WiFi.softAPdisconnect(true);
-			WiFi.mode(WIFI_OFF);
-			WiFi.forceSleepBegin();
-
-			bat_check_cnt++;
-
-			led_set_seq(LED_BAT_LOW);
-		}
-
-		if (bat_check_cnt >= BAT_CHECK_MAX_CNT)
-			return;
-
-		if (digitalRead(BAT_CHECK_PIN) == HIGH)
-			bat_check_cnt++;
-		else
-			bat_check_cnt = 0;
-	}
-	if (bat_check_cnt >= BAT_CHECK_MAX_CNT)
+	if (bat_is_low())
 		return;
-
 
 	static int con_last_time = 0;
 	static bool data_available = false;
