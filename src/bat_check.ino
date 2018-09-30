@@ -3,19 +3,21 @@
 #include <Ticker.h>
 
 #include "defs.h"
+#include "fsm.h"
 
 Ticker bat_ticker;
 
 bool bat_low = false;
 
-void bat_periodic(void (* action)(void))
+void bat_periodic(void)
 {
 	static int bat_check_cnt = 0;
 
 	if (bat_check_cnt == BAT_CHECK_MAX_CNT) {
 		bat_check_cnt = BAT_CHECK_MAX_CNT + 1;
-		action();
 		bat_low = true;
+
+		fsm_signal(BAT_LOW_SIGN);
 	}
 
 	if (bat_check_cnt >= BAT_CHECK_MAX_CNT)
@@ -27,15 +29,10 @@ void bat_periodic(void (* action)(void))
 		bat_check_cnt = 0;
 }
 
-bool bat_is_low(void)
-{
-	return bat_low;
-}
-
-void bat_init(void (* action)(void))
+void bat_init(void)
 {
 	pinMode(BAT_CHECK_PIN, INPUT_PULLUP);
-	bat_ticker.attach_ms(BAT_CHECK_INTERVAL, bat_periodic, action);
+	bat_ticker.attach_ms(BAT_CHECK_INTERVAL, bat_periodic);
 }
 
 

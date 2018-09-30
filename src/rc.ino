@@ -16,12 +16,13 @@
 #include <WiFiUdp.h>
 
 #include "defs.h"
+#include "fsm.h"
 #include "con_check.h"
+#include "bat_check.h"
 #include "expo.h"
 #include "servo_ctrl.h"
 #include "motor_ctrl.h"
 #include "led_ctrl.h"
-#include "bat_check.h"
 
 enum {
 	UNKNOWN = -1,
@@ -71,33 +72,28 @@ void stop_ctrl(void)
 	motor_brake();
 }
 
-void bat_low_action(void)
+void fsm_change_action(int new_state)
 {
-	stop_ctrl();
-
-	//WiFi.softAPdisconnect(true);
-	WiFi.mode(WIFI_OFF);
-	WiFi.forceSleepBegin();
-
-	led_set_seq(LED_BAT_LOW);
-}
-
-void con_change_action(void)
-{
-	int state = get_con_state();
-	switch (state) {
-		case CON_FAIL:
+	switch (new_state) {
+		case CON_FAIL_STATE:
 			led_set_seq(LED_CON_FAIL);
 			stop_ctrl();
 		break;
-		case CON_WIFI:
+		case CON_WIFI_STATE:
 			led_set_seq(LED_CON_WIFI);
 			stop_ctrl();
 		break;
-		case CON_WIFI_DATA:
+		case CON_WIFI_DATA_STATE:
 			led_set_seq(LED_CON_WIFI_DATA);
 			start_ctrl();
+		break;
+		case BAT_LOW_STATE:
+			led_set_seq(LED_BAT_LOW);
+			stop_ctrl();
 
+			//WiFi.softAPdisconnect(true);
+			WiFi.mode(WIFI_OFF);
+			WiFi.forceSleepBegin();
 		break;
 	}
 }
@@ -121,9 +117,11 @@ void setup()
 	led_init();
 	led_set_seq(LED_CON_FAIL);
 
-	bat_init(bat_low_action);
+	bat_init();
 
-	init_con_check(con_change_action);
+	con_check_init();
+
+	fsm_init(fsm_change_action);
 }
 
 ctrl_t *get_ctrl(int id)
@@ -164,10 +162,12 @@ int parse_pkt(char *pkt_buf)
 
 void loop()
 {
-	if (bat_is_low())
+	if (fsm_get_state() == BAT_LOW_STATE)
 		return;
+		
+	
 
-	if (get_con_state() == CON_FAIL)
+	if (fsm_get_state() == CON_FAIL_STATE)
 		return;
 
 	int pkt_size = udp.parsePacket();
@@ -178,9 +178,9 @@ void loop()
 		if (len > 0) {
 			//Serial.printf("UDP packet contents: %s\n", pkt_buf);
 
-			network_data_available();
+			con_check_data_available();
 
-			if (get_con_state() == CON_WIFI)
+			if (fsm_get_state() == CON_WIFI_STATE)
 				return;
 
 			pkt_buf[len] = 0;
