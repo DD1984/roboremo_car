@@ -30,6 +30,8 @@ enum {
 	SERVO,
 	SPEED,
 	BRAKE,
+	TRIM_PLUS,
+	TRIM_MINUS,
 };
 
 typedef struct {
@@ -51,6 +53,8 @@ ctrl_t controls[] = {
 	[SERVO] =		{"servo", &servo_param},
 	[SPEED] =		{"speed", &speed_param},
 	[BRAKE] =		{"brake", NULL},
+	[TRIM_PLUS] =	{"trim_plus", NULL},
+	[TRIM_MINUS] =	{"trim_minus", NULL},
 };
 
 #define CTRL_VAL(x) (controls[x].param->val)
@@ -164,8 +168,6 @@ void loop()
 {
 	if (fsm_get_state() == BAT_LOW_STATE)
 		return;
-		
-	
 
 	if (fsm_get_state() == CON_FAIL_STATE)
 		return;
@@ -205,6 +207,14 @@ void loop()
 				case BRAKE:
 					if (speed_val == 0)
 						motor_brake();
+				break;
+				case TRIM_PLUS:
+					servo_trim_plus();
+					servo_set(servo_val);
+				break;
+				case TRIM_MINUS:
+					servo_trim_minus();
+					servo_set(servo_val);
 				break;
 			}
 		}
