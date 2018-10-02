@@ -10,7 +10,7 @@
 #define CON_CHECK_INTERVAL 500 //ms
 
 #define SERVO_EXPO 50
-#define SPEED_EXPO 0
+#define SPEED_EXPO 55
 
 // H-bridge gpios
 #define H_BCK_PIN 13

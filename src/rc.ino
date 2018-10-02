@@ -30,8 +30,7 @@ enum {
 	SERVO,
 	SPEED,
 	BRAKE,
-	TRIM_PLUS,
-	TRIM_MINUS,
+	TRIM,
 };
 
 typedef struct {
@@ -48,13 +47,13 @@ typedef struct {
 
 ctrl_param_t servo_param = {-100, 100, 0};
 ctrl_param_t speed_param = {-100, 100, 0};
+ctrl_param_t trim_param = {-1, 1, 0};
 
 ctrl_t controls[] = {
 	[SERVO] =		{"servo", &servo_param},
 	[SPEED] =		{"speed", &speed_param},
 	[BRAKE] =		{"brake", NULL},
-	[TRIM_PLUS] =	{"trim_plus", NULL},
-	[TRIM_MINUS] =	{"trim_minus", NULL},
+	[TRIM] =		{"trim", &trim_param},
 };
 
 #define CTRL_VAL(x) (controls[x].param->val)
@@ -208,12 +207,8 @@ void loop()
 					if (speed_val == 0)
 						motor_brake();
 				break;
-				case TRIM_PLUS:
-					servo_trim_plus();
-					servo_set(servo_val);
-				break;
-				case TRIM_MINUS:
-					servo_trim_minus();
+				case TRIM:
+					servo_trim_action(ctrl->param->val);
 					servo_set(servo_val);
 				break;
 			}

@@ -85,20 +85,16 @@ void servo_init(void)
 	servo_trim = servo_trim_load();
 }
 
-void servo_trim_plus(void)
+void servo_trim_action(int16_t val)
 {
-	servo_trim += TRIM_DELTA;
+	if (val > 0)
+		servo_trim += TRIM_DELTA;
+	if (val < 0)
+		servo_trim -= TRIM_DELTA;
+
 	if (abs(servo_trim) < TRIM_DELTA)
 		servo_trim = 0;
 
-	servo_trim_save(servo_trim);
-}
-
-void servo_trim_minus(void)
-{
-	servo_trim -= TRIM_DELTA;
-	if (abs(servo_trim) < TRIM_DELTA)
-		servo_trim = 0;
-
-	servo_trim_save(servo_trim);
+	if (val != 0)
+		servo_trim_save(servo_trim);
 }
