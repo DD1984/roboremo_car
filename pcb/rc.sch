@@ -12777,8 +12777,8 @@ Source: coiltronics_dr_series.pdf</description>
 <part name="JP5" library="my" deviceset="PINHD-1X3" device=""/>
 <part name="JP1" library="my" deviceset="PINHD-1X3" device=""/>
 <part name="GND25" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R22" library="skydrop" deviceset="R_" device="1206" value="0"/>
 <part name="D1" library="semicon-smd-ipc" library_urn="urn:adsk.eagle:library:353" deviceset="D-FILL-" device="SMB" package3d_urn="urn:adsk.eagle:package:26311/1"/>
+<part name="LED2" library="led" library_urn="urn:adsk.eagle:library:259" deviceset="LED" device="CHIPLED_0805" package3d_urn="urn:adsk.eagle:package:15821/2"/>
 </parts>
 <sheets>
 <sheet>
@@ -12806,11 +12806,11 @@ Source: coiltronics_dr_series.pdf</description>
 <instance part="BAT-" gate="G$1" x="259.08" y="53.34" rot="R180"/>
 <instance part="GND5" gate="1" x="241.3" y="33.02"/>
 <instance part="U1" gate="G$1" x="78.74" y="134.62"/>
-<instance part="R15" gate="G$1" x="43.18" y="147.32" rot="R90"/>
-<instance part="R16" gate="G$1" x="33.02" y="147.32" rot="R90"/>
-<instance part="R17" gate="G$1" x="101.6" y="147.32" rot="R90"/>
-<instance part="R18" gate="G$1" x="106.68" y="147.32" rot="R90"/>
-<instance part="P+3" gate="VCC" x="58.42" y="167.64"/>
+<instance part="R15" gate="G$1" x="43.18" y="157.48" rot="R90"/>
+<instance part="R16" gate="G$1" x="33.02" y="157.48" rot="R90"/>
+<instance part="R17" gate="G$1" x="101.6" y="157.48" rot="R90"/>
+<instance part="R18" gate="G$1" x="106.68" y="157.48" rot="R90"/>
+<instance part="P+3" gate="VCC" x="58.42" y="177.8"/>
 <instance part="GND7" gate="1" x="96.52" y="101.6"/>
 <instance part="R19" gate="G$1" x="106.68" y="116.84" rot="R90"/>
 <instance part="R20" gate="G$1" x="50.8" y="132.08" rot="R180"/>
@@ -12875,8 +12875,8 @@ Source: coiltronics_dr_series.pdf</description>
 <instance part="JP5" gate="A" x="160.02" y="137.16"/>
 <instance part="JP1" gate="A" x="251.46" y="149.86"/>
 <instance part="GND25" gate="1" x="241.3" y="139.7"/>
-<instance part="R22" gate="G$1" x="236.22" y="167.64" rot="R180"/>
 <instance part="D1" gate="G$1" x="-63.5" y="129.54"/>
+<instance part="LED2" gate="G$1" x="101.6" y="147.32"/>
 </instances>
 <busses>
 </busses>
@@ -13203,23 +13203,23 @@ Source: coiltronics_dr_series.pdf</description>
 <pinref part="U1" gate="G$1" pin="VCC"/>
 <wire x1="60.96" y1="121.92" x2="58.42" y2="121.92" width="0.1524" layer="91"/>
 <pinref part="P+3" gate="VCC" pin="VCC"/>
-<wire x1="58.42" y1="121.92" x2="58.42" y2="157.48" width="0.1524" layer="91"/>
+<wire x1="58.42" y1="121.92" x2="58.42" y2="167.64" width="0.1524" layer="91"/>
 <pinref part="R15" gate="G$1" pin="2"/>
-<wire x1="58.42" y1="157.48" x2="58.42" y2="165.1" width="0.1524" layer="91"/>
-<wire x1="43.18" y1="152.4" x2="43.18" y2="157.48" width="0.1524" layer="91"/>
-<wire x1="43.18" y1="157.48" x2="58.42" y2="157.48" width="0.1524" layer="91"/>
+<wire x1="58.42" y1="167.64" x2="58.42" y2="175.26" width="0.1524" layer="91"/>
+<wire x1="43.18" y1="162.56" x2="43.18" y2="167.64" width="0.1524" layer="91"/>
+<wire x1="43.18" y1="167.64" x2="58.42" y2="167.64" width="0.1524" layer="91"/>
 <pinref part="R17" gate="G$1" pin="2"/>
-<wire x1="58.42" y1="157.48" x2="101.6" y2="157.48" width="0.1524" layer="91"/>
-<wire x1="101.6" y1="157.48" x2="101.6" y2="152.4" width="0.1524" layer="91"/>
+<wire x1="58.42" y1="167.64" x2="101.6" y2="167.64" width="0.1524" layer="91"/>
+<wire x1="101.6" y1="167.64" x2="101.6" y2="162.56" width="0.1524" layer="91"/>
 <pinref part="R18" gate="G$1" pin="2"/>
-<wire x1="106.68" y1="152.4" x2="106.68" y2="157.48" width="0.1524" layer="91"/>
-<wire x1="106.68" y1="157.48" x2="101.6" y2="157.48" width="0.1524" layer="91"/>
-<junction x="101.6" y="157.48"/>
+<wire x1="106.68" y1="162.56" x2="106.68" y2="167.64" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="167.64" x2="101.6" y2="167.64" width="0.1524" layer="91"/>
+<junction x="101.6" y="167.64"/>
 <pinref part="R16" gate="G$1" pin="2"/>
-<wire x1="33.02" y1="152.4" x2="33.02" y2="157.48" width="0.1524" layer="91"/>
-<wire x1="33.02" y1="157.48" x2="43.18" y2="157.48" width="0.1524" layer="91"/>
-<junction x="43.18" y="157.48"/>
-<junction x="58.42" y="157.48"/>
+<wire x1="33.02" y1="162.56" x2="33.02" y2="167.64" width="0.1524" layer="91"/>
+<wire x1="33.02" y1="167.64" x2="43.18" y2="167.64" width="0.1524" layer="91"/>
+<junction x="43.18" y="167.64"/>
+<junction x="58.42" y="167.64"/>
 <pinref part="C1" gate="G$1" pin="2"/>
 <wire x1="58.42" y1="119.38" x2="58.42" y2="121.92" width="0.1524" layer="91"/>
 <junction x="58.42" y="121.92"/>
@@ -13236,7 +13236,7 @@ Source: coiltronics_dr_series.pdf</description>
 <pinref part="U1" gate="G$1" pin="RESET"/>
 <pinref part="R15" gate="G$1" pin="1"/>
 <wire x1="60.96" y1="139.7" x2="43.18" y2="139.7" width="0.1524" layer="91"/>
-<wire x1="43.18" y1="139.7" x2="43.18" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="43.18" y1="139.7" x2="43.18" y2="152.4" width="0.1524" layer="91"/>
 <pinref part="R20" gate="G$1" pin="2"/>
 <wire x1="45.72" y1="132.08" x2="43.18" y2="132.08" width="0.1524" layer="91"/>
 <wire x1="43.18" y1="132.08" x2="43.18" y2="139.7" width="0.1524" layer="91"/>
@@ -13248,37 +13248,33 @@ Source: coiltronics_dr_series.pdf</description>
 <pinref part="U1" gate="G$1" pin="CH_PD"/>
 <pinref part="R16" gate="G$1" pin="1"/>
 <wire x1="60.96" y1="134.62" x2="33.02" y2="134.62" width="0.1524" layer="91"/>
-<wire x1="33.02" y1="134.62" x2="33.02" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="33.02" y1="134.62" x2="33.02" y2="152.4" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$21" class="0">
 <segment>
-<pinref part="R17" gate="G$1" pin="1"/>
-<wire x1="101.6" y1="142.24" x2="101.6" y2="129.54" width="0.1524" layer="91"/>
 <pinref part="U1" gate="G$1" pin="GPIO0"/>
 <wire x1="101.6" y1="129.54" x2="93.98" y2="129.54" width="0.1524" layer="91"/>
-<junction x="101.6" y="129.54"/>
 <pinref part="JP6" gate="G$1" pin="1"/>
 <wire x1="121.92" y1="111.76" x2="116.84" y2="111.76" width="0.1524" layer="91"/>
 <wire x1="101.6" y1="129.54" x2="114.3" y2="129.54" width="0.1524" layer="91"/>
 <wire x1="114.3" y1="129.54" x2="114.3" y2="111.76" width="0.1524" layer="91"/>
 <wire x1="114.3" y1="111.76" x2="116.84" y2="111.76" width="0.1524" layer="91"/>
+<pinref part="LED2" gate="G$1" pin="C"/>
+<wire x1="101.6" y1="142.24" x2="101.6" y2="129.54" width="0.1524" layer="91"/>
+<junction x="101.6" y="129.54"/>
 </segment>
 </net>
 <net name="SERVO#2_CTRL" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="GPIO2"/>
-<wire x1="93.98" y1="127" x2="106.68" y2="127" width="0.1524" layer="91"/>
-<pinref part="R18" gate="G$1" pin="1"/>
-<wire x1="106.68" y1="127" x2="106.68" y2="142.24" width="0.1524" layer="91"/>
-<wire x1="106.68" y1="127" x2="119.38" y2="127" width="0.1524" layer="91"/>
-<junction x="106.68" y="127"/>
-<label x="121.92" y="127" size="1.778" layer="95"/>
+<pinref part="U1" gate="G$1" pin="GPIO5"/>
+<wire x1="93.98" y1="134.62" x2="119.38" y2="134.62" width="0.1524" layer="91"/>
+<label x="121.92" y="134.62" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="JP1" gate="A" pin="1"/>
-<wire x1="248.92" y1="152.4" x2="218.44" y2="152.4" width="0.1524" layer="91"/>
-<label x="193.04" y="152.4" size="1.778" layer="95"/>
+<pinref part="JP4" gate="A" pin="1"/>
+<wire x1="248.92" y1="167.64" x2="218.44" y2="167.64" width="0.1524" layer="91"/>
+<label x="198.12" y="167.64" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$26" class="0">
@@ -13459,14 +13455,18 @@ Source: coiltronics_dr_series.pdf</description>
 </net>
 <net name="H_PWM" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="GPIO5"/>
-<wire x1="93.98" y1="134.62" x2="119.38" y2="134.62" width="0.1524" layer="91"/>
-<label x="121.92" y="134.62" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="R5" gate="G$1" pin="2"/>
 <wire x1="-48.26" y1="-27.94" x2="-55.88" y2="-27.94" width="0.1524" layer="91"/>
 <label x="-60.96" y="-22.86" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="R18" gate="G$1" pin="1"/>
+<pinref part="U1" gate="G$1" pin="GPIO2"/>
+<wire x1="106.68" y1="152.4" x2="106.68" y2="127" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="127" x2="93.98" y2="127" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="127" x2="119.38" y2="127" width="0.1524" layer="91"/>
+<junction x="106.68" y="127"/>
+<label x="121.92" y="127" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="BAT_CHECK" class="0">
@@ -13611,18 +13611,9 @@ Source: coiltronics_dr_series.pdf</description>
 <label x="121.92" y="132.08" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="223.52" y1="167.64" x2="218.44" y2="167.64" width="0.1524" layer="91"/>
-<label x="193.04" y="167.64" size="1.778" layer="95"/>
-<pinref part="R22" gate="G$1" pin="2"/>
-<wire x1="231.14" y1="167.64" x2="223.52" y2="167.64" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$22" class="0">
-<segment>
-<pinref part="JP4" gate="A" pin="1"/>
-<wire x1="243.84" y1="167.64" x2="248.92" y2="167.64" width="0.1524" layer="91"/>
-<pinref part="R22" gate="G$1" pin="1"/>
-<wire x1="241.3" y1="167.64" x2="243.84" y2="167.64" width="0.1524" layer="91"/>
+<pinref part="JP1" gate="A" pin="1"/>
+<wire x1="248.92" y1="152.4" x2="218.44" y2="152.4" width="0.1524" layer="91"/>
+<label x="198.12" y="152.4" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$14" class="0">
@@ -13651,6 +13642,13 @@ Source: coiltronics_dr_series.pdf</description>
 <pinref part="D1" gate="G$1" pin="C"/>
 <wire x1="-60.96" y1="129.54" x2="-55.88" y2="129.54" width="0.1524" layer="91"/>
 <junction x="-55.88" y="129.54"/>
+</segment>
+</net>
+<net name="N$24" class="0">
+<segment>
+<pinref part="R17" gate="G$1" pin="1"/>
+<pinref part="LED2" gate="G$1" pin="A"/>
+<wire x1="101.6" y1="152.4" x2="101.6" y2="149.86" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
