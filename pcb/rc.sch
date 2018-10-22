@@ -12694,12 +12694,12 @@ Source: coiltronics_dr_series.pdf</description>
 <part name="T5" library="zetex" library_urn="urn:adsk.eagle:library:418" deviceset="NPNSOT23" device="" package3d_urn="urn:adsk.eagle:package:30981/1"/>
 <part name="T6" library="zetex" library_urn="urn:adsk.eagle:library:418" deviceset="NPNSOT23" device="" package3d_urn="urn:adsk.eagle:package:30981/1"/>
 <part name="GND1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R9" library="skydrop" deviceset="R_" device="0805"/>
-<part name="R10" library="skydrop" deviceset="R_" device="0805"/>
-<part name="R1" library="skydrop" deviceset="R_" device="0805"/>
-<part name="R2" library="my" deviceset="R_0805" device="0805"/>
-<part name="R3" library="skydrop" deviceset="R_" device="0805"/>
-<part name="R4" library="skydrop" deviceset="R_" device="0805"/>
+<part name="R9" library="skydrop" deviceset="R_" device="0805" value="100k"/>
+<part name="R10" library="skydrop" deviceset="R_" device="0805" value="100k"/>
+<part name="R1" library="skydrop" deviceset="R_" device="0805" value="100k"/>
+<part name="R2" library="my" deviceset="R_0805" device="0805" value="100k"/>
+<part name="R3" library="skydrop" deviceset="R_" device="0805" value="10k"/>
+<part name="R4" library="skydrop" deviceset="R_" device="0805" value="10k"/>
 <part name="T7" library="zetex" library_urn="urn:adsk.eagle:library:418" deviceset="PMOSSOT23" device="" package3d_urn="urn:adsk.eagle:package:30981/1"/>
 <part name="GND4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="MOTOR_B" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="WIREPAD" device="SMD5-2,5" package3d_urn="urn:adsk.eagle:package:30845/1"/>
@@ -12708,58 +12708,58 @@ Source: coiltronics_dr_series.pdf</description>
 <part name="BAT-" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="WIREPAD" device="SMD5-2,5" package3d_urn="urn:adsk.eagle:package:30845/1"/>
 <part name="GND5" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U1" library="my" deviceset="ESP-12" device=""/>
-<part name="R15" library="skydrop" deviceset="R_" device="0805"/>
-<part name="R16" library="skydrop" deviceset="R_" device="0805"/>
-<part name="R17" library="skydrop" deviceset="R_" device="0805"/>
-<part name="R18" library="skydrop" deviceset="R_" device="0805"/>
+<part name="R15" library="skydrop" deviceset="R_" device="0805" value="10k"/>
+<part name="R16" library="skydrop" deviceset="R_" device="0805" value="10k"/>
+<part name="R17" library="skydrop" deviceset="R_" device="0805" value="1k"/>
+<part name="R18" library="skydrop" deviceset="R_" device="0805" value="10k"/>
 <part name="P+3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R19" library="skydrop" deviceset="R_" device="0805"/>
+<part name="R19" library="skydrop" deviceset="R_" device="0805" value="10k"/>
 <part name="R20" library="skydrop" deviceset="R_" device="0805"/>
-<part name="C1" library="skydrop" deviceset="C-EU" device="C0805"/>
+<part name="C1" library="skydrop" deviceset="C-EU" device="C0805" value="0.1uF"/>
 <part name="GND3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="IC1" library="skydrop" deviceset="TCM809" device=""/>
+<part name="IC1" library="skydrop" deviceset="TCM809" device="" value="STM809S"/>
 <part name="T8" library="zetex" library_urn="urn:adsk.eagle:library:418" deviceset="NPNSOT23" device="" package3d_urn="urn:adsk.eagle:package:30981/1"/>
 <part name="IC2" library="my" deviceset="TP4056" device=""/>
-<part name="R8" library="skydrop" deviceset="R_" device="0805"/>
+<part name="R8" library="skydrop" deviceset="R_" device="0805" value="10k"/>
 <part name="GND8" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R11" library="skydrop" deviceset="R_" device="0805"/>
-<part name="R12" library="skydrop" deviceset="R_" device="0805"/>
+<part name="R11" library="skydrop" deviceset="R_" device="0805" value="1.2k"/>
+<part name="R12" library="skydrop" deviceset="R_" device="0805" value="100k"/>
 <part name="T9" library="zetex" library_urn="urn:adsk.eagle:library:418" deviceset="PMOSSOT23" device="" package3d_urn="urn:adsk.eagle:package:30981/1"/>
 <part name="GND10" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R13" library="skydrop" deviceset="R_" device="0805"/>
+<part name="R13" library="skydrop" deviceset="R_" device="0805" value="10k"/>
 <part name="GND11" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND12" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="R7" library="skydrop" deviceset="R_" device="1206" value="0"/>
 <part name="GND9" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C2" library="skydrop" deviceset="C_" device="1206"/>
-<part name="C3" library="skydrop" deviceset="C_" device="1206"/>
-<part name="R21" library="skydrop" deviceset="R_" device="0805"/>
+<part name="C2" library="skydrop" deviceset="C_" device="1206" value="10uF"/>
+<part name="C3" library="skydrop" deviceset="C_" device="1206" value="10uF"/>
+<part name="R21" library="skydrop" deviceset="R_" device="0805" value="1k"/>
 <part name="LED1" library="led" library_urn="urn:adsk.eagle:library:259" deviceset="LED" device="CHIPLED_0805" package3d_urn="urn:adsk.eagle:package:15821/2"/>
-<part name="IC3" library="skydrop" deviceset="MIC5219XX" device=""/>
+<part name="IC3" library="skydrop" deviceset="MIC5219XX" device="" value="3.3v 300mA low-drop"/>
 <part name="GND13" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C4" library="skydrop" deviceset="C-EU" device="C0805"/>
+<part name="C4" library="skydrop" deviceset="C-EU" device="C0805" value="0.01uF"/>
 <part name="GND14" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C5" library="skydrop" deviceset="C_" device="0805"/>
-<part name="C6" library="skydrop" deviceset="C_" device="0805"/>
+<part name="C5" library="skydrop" deviceset="C_" device="0805" value="1uF"/>
+<part name="C6" library="skydrop" deviceset="C_" device="0805" value="1uF"/>
 <part name="GND15" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND16" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="T10" library="zetex" library_urn="urn:adsk.eagle:library:418" deviceset="NPNSOT23" device="" package3d_urn="urn:adsk.eagle:package:30981/1"/>
 <part name="GND17" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R5" library="skydrop" deviceset="R_" device="0805"/>
+<part name="R5" library="skydrop" deviceset="R_" device="0805" value="100k"/>
 <part name="T11" library="zetex" library_urn="urn:adsk.eagle:library:418" deviceset="NPNSOT23" device="" package3d_urn="urn:adsk.eagle:package:30981/1"/>
 <part name="GND18" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R6" library="skydrop" deviceset="R_" device="0805"/>
+<part name="R6" library="skydrop" deviceset="R_" device="0805" value="10k"/>
 <part name="D6" library="skydrop" deviceset="DIODE" device="_SOD-123FL"/>
 <part name="D3" library="skydrop" deviceset="DIODE" device="_SOD-123FL"/>
 <part name="D2" library="skydrop" deviceset="DIODE" device="_SOD-123FL"/>
 <part name="D4" library="skydrop" deviceset="DIODE" device="_SOD-123FL"/>
 <part name="J1" library="skydrop" deviceset="USB-AB" device=""/>
-<part name="R24" library="skydrop" deviceset="R_" device="1206" value="0"/>
+<part name="R24" library="skydrop" deviceset="R_" device="1206" value="0.4"/>
 <part name="GND21" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND19" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="IC4" library="my" deviceset="NCP1450A" device=""/>
+<part name="IC4" library="my" deviceset="NCP1450A" device="" value="NCP1450"/>
 <part name="L1" library="inductors" library_urn="urn:adsk.eagle:library:243" deviceset="DR74" device="" package3d_urn="urn:adsk.eagle:package:15122/1"/>
 <part name="T12" library="zetex" library_urn="urn:adsk.eagle:library:418" deviceset="NMOSSOT23" device="" package3d_urn="urn:adsk.eagle:package:30981/1"/>
 <part name="GND20" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
@@ -12777,7 +12777,7 @@ Source: coiltronics_dr_series.pdf</description>
 <part name="JP5" library="my" deviceset="PINHD-1X3" device=""/>
 <part name="JP1" library="my" deviceset="PINHD-1X3" device=""/>
 <part name="GND25" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="D1" library="semicon-smd-ipc" library_urn="urn:adsk.eagle:library:353" deviceset="D-FILL-" device="SMB" package3d_urn="urn:adsk.eagle:package:26311/1"/>
+<part name="D1" library="semicon-smd-ipc" library_urn="urn:adsk.eagle:library:353" deviceset="D-FILL-" device="SMB" package3d_urn="urn:adsk.eagle:package:26311/1" value="SS26"/>
 <part name="LED2" library="led" library_urn="urn:adsk.eagle:library:259" deviceset="LED" device="CHIPLED_0805" package3d_urn="urn:adsk.eagle:package:15821/2"/>
 </parts>
 <sheets>
@@ -12800,16 +12800,24 @@ Source: coiltronics_dr_series.pdf</description>
 <instance part="R4" gate="G$1" x="-43.18" y="33.02" rot="R180"/>
 <instance part="T7" gate="A" x="210.82" y="63.5" rot="MR90"/>
 <instance part="GND4" gate="1" x="149.86" y="124.46" rot="MR0"/>
-<instance part="MOTOR_B" gate="G$1" x="40.64" y="33.02"/>
-<instance part="MOTOR_A" gate="G$1" x="33.02" y="33.02" rot="R180"/>
-<instance part="BAT+" gate="G$1" x="259.08" y="63.5" rot="R180"/>
-<instance part="BAT-" gate="G$1" x="259.08" y="53.34" rot="R180"/>
+<instance part="MOTOR_B" gate="G$1" x="40.64" y="33.02" smashed="yes">
+<attribute name="NAME" x="34.417" y="37.4142" size="1.778" layer="95"/>
+</instance>
+<instance part="MOTOR_A" gate="G$1" x="15.24" y="33.02" smashed="yes" rot="R180">
+<attribute name="NAME" x="21.463" y="38.7858" size="1.778" layer="95" rot="R180"/>
+</instance>
+<instance part="BAT+" gate="G$1" x="259.08" y="63.5" smashed="yes" rot="R180">
+<attribute name="NAME" x="260.223" y="61.6458" size="1.778" layer="95" rot="R180"/>
+</instance>
+<instance part="BAT-" gate="G$1" x="259.08" y="53.34" smashed="yes" rot="R180">
+<attribute name="NAME" x="260.223" y="51.4858" size="1.778" layer="95" rot="R180"/>
+</instance>
 <instance part="GND5" gate="1" x="241.3" y="33.02"/>
 <instance part="U1" gate="G$1" x="78.74" y="134.62"/>
 <instance part="R15" gate="G$1" x="43.18" y="157.48" rot="R90"/>
 <instance part="R16" gate="G$1" x="33.02" y="157.48" rot="R90"/>
 <instance part="R17" gate="G$1" x="101.6" y="157.48" rot="R90"/>
-<instance part="R18" gate="G$1" x="106.68" y="157.48" rot="R90"/>
+<instance part="R18" gate="G$1" x="109.22" y="157.48" rot="R90"/>
 <instance part="P+3" gate="VCC" x="58.42" y="177.8"/>
 <instance part="GND7" gate="1" x="96.52" y="101.6"/>
 <instance part="R19" gate="G$1" x="106.68" y="116.84" rot="R90"/>
@@ -12835,7 +12843,10 @@ Source: coiltronics_dr_series.pdf</description>
 <instance part="C3" gate="G$1" x="241.3" y="58.42"/>
 <instance part="R21" gate="G$1" x="198.12" y="68.58" rot="MR180"/>
 <instance part="LED1" gate="G$1" x="205.74" y="76.2"/>
-<instance part="IC3" gate="G1" x="12.7" y="116.84"/>
+<instance part="IC3" gate="G1" x="12.7" y="116.84" smashed="yes">
+<attribute name="NAME" x="5.08" y="125.73" size="1.778" layer="95"/>
+<attribute name="VALUE" x="2.54" y="129.54" size="1.778" layer="96"/>
+</instance>
 <instance part="GND13" gate="1" x="15.24" y="96.52"/>
 <instance part="C4" gate="G$1" x="0" y="104.14" rot="R180"/>
 <instance part="GND14" gate="1" x="0" y="96.52"/>
@@ -12857,7 +12868,10 @@ Source: coiltronics_dr_series.pdf</description>
 <instance part="R24" gate="G$1" x="177.8" y="96.52"/>
 <instance part="GND21" gate="1" x="114.3" y="101.6" rot="MR0"/>
 <instance part="GND19" gate="1" x="175.26" y="53.34"/>
-<instance part="IC4" gate="G1" x="-88.9" y="109.22"/>
+<instance part="IC4" gate="G1" x="-88.9" y="109.22" smashed="yes">
+<attribute name="NAME" x="-96.52" y="118.11" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-93.98" y="99.06" size="1.778" layer="96"/>
+</instance>
 <instance part="L1" gate="G$1" x="-86.36" y="129.54"/>
 <instance part="T12" gate="A" x="-71.12" y="116.84"/>
 <instance part="GND20" gate="1" x="-71.12" y="93.98"/>
@@ -13212,8 +13226,8 @@ Source: coiltronics_dr_series.pdf</description>
 <wire x1="58.42" y1="167.64" x2="101.6" y2="167.64" width="0.1524" layer="91"/>
 <wire x1="101.6" y1="167.64" x2="101.6" y2="162.56" width="0.1524" layer="91"/>
 <pinref part="R18" gate="G$1" pin="2"/>
-<wire x1="106.68" y1="162.56" x2="106.68" y2="167.64" width="0.1524" layer="91"/>
-<wire x1="106.68" y1="167.64" x2="101.6" y2="167.64" width="0.1524" layer="91"/>
+<wire x1="109.22" y1="162.56" x2="109.22" y2="167.64" width="0.1524" layer="91"/>
+<wire x1="109.22" y1="167.64" x2="101.6" y2="167.64" width="0.1524" layer="91"/>
 <junction x="101.6" y="167.64"/>
 <pinref part="R16" gate="G$1" pin="2"/>
 <wire x1="33.02" y1="162.56" x2="33.02" y2="167.64" width="0.1524" layer="91"/>
@@ -13462,10 +13476,10 @@ Source: coiltronics_dr_series.pdf</description>
 <segment>
 <pinref part="R18" gate="G$1" pin="1"/>
 <pinref part="U1" gate="G$1" pin="GPIO2"/>
-<wire x1="106.68" y1="152.4" x2="106.68" y2="127" width="0.1524" layer="91"/>
-<wire x1="106.68" y1="127" x2="93.98" y2="127" width="0.1524" layer="91"/>
-<wire x1="106.68" y1="127" x2="119.38" y2="127" width="0.1524" layer="91"/>
-<junction x="106.68" y="127"/>
+<wire x1="109.22" y1="152.4" x2="109.22" y2="127" width="0.1524" layer="91"/>
+<wire x1="109.22" y1="127" x2="93.98" y2="127" width="0.1524" layer="91"/>
+<wire x1="109.22" y1="127" x2="119.38" y2="127" width="0.1524" layer="91"/>
+<junction x="109.22" y="127"/>
 <label x="121.92" y="127" size="1.778" layer="95"/>
 </segment>
 </net>
@@ -13557,18 +13571,14 @@ Source: coiltronics_dr_series.pdf</description>
 <net name="N$36" class="0">
 <segment>
 <pinref part="MOTOR_A" gate="G$1" pin="P"/>
-<wire x1="30.48" y1="33.02" x2="27.94" y2="33.02" width="0.1524" layer="91"/>
-<wire x1="17.78" y1="33.02" x2="15.24" y2="33.02" width="0.1524" layer="91"/>
 <pinref part="T3" gate="A" pin="D"/>
 <wire x1="2.54" y1="43.18" x2="2.54" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="2.54" y1="45.72" x2="2.54" y2="48.26" width="0.1524" layer="91"/>
 <pinref part="T1" gate="A" pin="D"/>
 <wire x1="2.54" y1="33.02" x2="2.54" y2="30.48" width="0.1524" layer="91"/>
 <wire x1="2.54" y1="43.18" x2="2.54" y2="33.02" width="0.1524" layer="91"/>
-<wire x1="5.08" y1="33.02" x2="2.54" y2="33.02" width="0.1524" layer="91"/>
 <junction x="2.54" y="33.02"/>
-<wire x1="15.24" y1="33.02" x2="5.08" y2="33.02" width="0.1524" layer="91"/>
-<wire x1="27.94" y1="33.02" x2="17.78" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="2.54" y1="33.02" x2="12.7" y2="33.02" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="5V" class="0">
