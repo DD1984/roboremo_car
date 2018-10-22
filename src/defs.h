@@ -13,17 +13,17 @@
 #define SPEED_EXPO 55
 
 // H-bridge gpios
-#define H_BCK_PIN 13
-#define H_FWD_PIN 14
-#define H_PWM_PIN 5
+#define H_BCK_PIN 14
+#define H_FWD_PIN 12
+#define H_PWM_PIN 2
 
-#define BAT_CHECK_PIN 12
+#define BAT_CHECK_PIN 13
 #define BAT_CHECK_INTERVAL 100 //ms
 #define BAT_CHECK_MAX_CNT  10
 
 #define SERVO_PIN 4
 
-#define LED_PIN 2
+#define LED_PIN 0
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
 
