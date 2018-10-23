@@ -9,13 +9,15 @@
 
 #define CON_CHECK_INTERVAL 500 //ms
 
-#define SERVO_EXPO 80
+#define SERVO_EXPO 55
 #define SPEED_EXPO 55
 
 // H-bridge gpios
 #define H_BCK_PIN 14
 #define H_FWD_PIN 12
 #define H_PWM_PIN 2
+
+#define AUTO_BRAKE //brake motor when motor channel == 0
 
 #define BAT_CHECK_PIN 13
 #define BAT_CHECK_INTERVAL 100 //ms

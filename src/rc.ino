@@ -29,7 +29,9 @@ enum {
 
 	SERVO,
 	SPEED,
+#ifndef AUTO_BRAKE
 	BRAKE,
+#endif
 	TRIM,
 };
 
@@ -52,8 +54,10 @@ ctrl_param_t trim_param = {-1, 1, 0};
 ctrl_t controls[] = {
 	[SERVO] =		{"servo", &servo_param},
 	[SPEED] =		{"speed", &speed_param},
-	[BRAKE] =		{"brake", NULL},
-	[TRIM] =		{"trim", &trim_param},
+#ifndef AUTO_BRAKE
+	[BRAKE] =		{"brake", NULL}, //brake button
+#endif
+	[TRIM] =		{"trim", &trim_param}, //slider with three values {-1, 0, 1}
 };
 
 #define CTRL_VAL(x) (controls[x].param->val)
@@ -202,10 +206,16 @@ void loop()
 				break;
 				case SPEED:
 					motor_set(speed_val);
+#ifdef AUTO_BRAKE
+					if (speed_val == 0)
+						motor_brake();
+#endif
 				break;
+#ifndef AUTO_BRAKE
 				case BRAKE:
 					if (speed_val == 0)
 						motor_brake();
+#endif
 				break;
 				case TRIM:
 					servo_trim_action(ctrl->param->val);
