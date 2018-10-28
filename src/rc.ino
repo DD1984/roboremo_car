@@ -28,6 +28,7 @@ enum {
 	UNKNOWN = -1,
 
 	SERVO,
+	GYRO,
 	SPEED,
 #ifndef AUTO_BRAKE
 	BRAKE,
@@ -53,6 +54,7 @@ ctrl_param_t trim_param = {-1, 1, 0};
 
 ctrl_t controls[] = {
 	[SERVO] =		{"servo", &servo_param},
+	[GYRO] =		{"gyro", &servo_param},
 	[SPEED] =		{"speed", &speed_param},
 #ifndef AUTO_BRAKE
 	[BRAKE] =		{"brake", NULL}, //brake button
@@ -63,6 +65,7 @@ ctrl_t controls[] = {
 #define CTRL_VAL(x) (controls[x].param->val)
 
 #define servo_val		(CTRL_VAL(SERVO))
+#define gyro_val		(CTRL_VAL(GYRO))
 #define speed_val		(CTRL_VAL(SPEED))
 
 WiFiUDP udp;
@@ -75,7 +78,7 @@ void start_ctrl(void)
 
 void stop_ctrl(void)
 {
-	servo_stop();
+	servo_stop_all();
 	motor_brake();
 }
 
@@ -202,7 +205,10 @@ void loop()
 
 			switch (id) {
 				case SERVO:
-					servo_set(servo_val);
+					servo_set(0, servo_val);
+				break;
+				case GYRO:
+					servo_set(1, gyro_val);
 				break;
 				case SPEED:
 					motor_set(speed_val);
@@ -219,7 +225,7 @@ void loop()
 				break;
 				case TRIM:
 					servo_trim_action(ctrl->param->val);
-					servo_set(servo_val);
+					servo_set(0, servo_val);
 				break;
 			}
 		}

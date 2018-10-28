@@ -9,7 +9,6 @@
 
 #define CON_CHECK_INTERVAL 500 //ms
 
-#define SERVO_EXPO 55
 #define SPEED_EXPO 55
 
 // H-bridge gpios
@@ -23,7 +22,8 @@
 #define BAT_CHECK_INTERVAL 100 //ms
 #define BAT_CHECK_MAX_CNT  10
 
-#define SERVO_PIN 4
+#define SERVO_PINS {4, 5}
+#define SERVO_EXPO {55, 0}
 
 #define LED_PIN 0
 

@@ -6,29 +6,37 @@
 #include "defs.h"
 #include "expo.h"
 
-Servo servo;
-
 #define TRIM_ADDR 0
 #define TRIM_DELTA 5
 
+int servo_pins[] = SERVO_PINS;
+int servo_expo[ARRAY_SIZE(servo_pins)] = SERVO_EXPO;
+int16_t servo_trim[ARRAY_SIZE(servo_pins)];
+Servo servo[ARRAY_SIZE(servo_pins)];
+
 typedef struct {
-	int16_t val;
+	int16_t vals[ARRAY_SIZE(servo_pins)];
 	uint32_t crc;
-} trim_t;
+} trim_store_t;
 
-int16_t servo_trim = 0;
-
-void servo_set(int16_t val)
+void servo_set(uint8_t num, int16_t val)
 {
-	val = ((calcRESX1000(expo(calc100toRESX(val), SERVO_EXPO)) + 1000) >> 1) + 1000;
-	servo.writeMicroseconds(val + servo_trim);
+	val = ((calcRESX1000(expo(calc100toRESX(val), servo_expo[num])) + 1000) >> 1) + 1000;
+	servo[num].writeMicroseconds(val + servo_trim[num]);
 }
 
-void servo_stop(void)
+void servo_stop(uint8_t num)
 {
-	servo.detach();
-	pinMode(SERVO_PIN, OUTPUT);
-	digitalWrite(SERVO_PIN, LOW);
+	servo[num].detach();
+	pinMode(servo_pins[num], OUTPUT);
+	digitalWrite(servo_pins[num], LOW);
+}
+
+void servo_stop_all(void)
+{
+	int i;
+	for (i = 0; i < ARRAY_SIZE(servo_pins); i++)
+		servo_stop(i);
 }
 
 uint32_t calculateCRC32(const uint8_t *data, size_t length)
@@ -50,29 +58,42 @@ uint32_t calculateCRC32(const uint8_t *data, size_t length)
 	return crc;
 }
 
-int16_t servo_trim_load(void)
+void servo_trim_load(void)
 {
-	trim_t trim;
+	trim_store_t trim;
 	EEPROM.get(TRIM_ADDR, trim);
-	uint32_t crc = calculateCRC32((uint8_t *)&trim.val, sizeof(trim.val));
+	uint32_t crc = calculateCRC32((uint8_t *)&trim.vals[0], sizeof(trim.vals));
 
 	if (crc == trim.crc) {
-		Serial.printf("servo trim: %d\n", trim.val);
-		return trim.val;
+		int i;
+		Serial.printf("servo trim: ");
+		for (i = 0; i < ARRAY_SIZE(servo_pins); i++)
+			Serial.printf("%d ", trim.vals[i]);
+		Serial.printf("\n");
+
+		memcpy(servo_trim, &trim.vals[0], sizeof(servo_trim));
+
+		return;
 	}
 
-	Serial.printf("bad servo trim crc - calc:0x08%x stored::0x08%x\n", crc, trim.crc);
+	bzero(servo_trim, sizeof(servo_trim));
 
-	return 0;
+	Serial.printf("bad servo trim crc - calc:0x08%x stored::0x08%x\n", crc, trim.crc);
 }
 
-void servo_trim_save(int16_t val)
+void servo_trim_save(void)
 {
-	trim_t trim;
-	trim.val = val;
-	trim.crc = calculateCRC32((uint8_t *)&trim.val, sizeof(trim.val));
+	trim_store_t trim;
+	memcpy(&trim.vals[0], servo_trim, sizeof(servo_trim));
 
-	Serial.printf("save trim: val: %d crc: 0x08%x\n", trim.val, trim.crc);
+	trim.crc = calculateCRC32((uint8_t *)&trim.vals[0], sizeof(trim.vals));
+
+	int i;
+	Serial.printf("save trim: vals: ");
+	for (i = 0; i < ARRAY_SIZE(servo_pins); i++)
+		Serial.printf("%d ", trim.vals[i]);
+
+	Serial.printf("crc: 0x08%x\n", trim.crc);
 
 	EEPROM.put(TRIM_ADDR, trim);
 	EEPROM.commit();
@@ -80,21 +101,24 @@ void servo_trim_save(int16_t val)
 
 void servo_init(void)
 {
-	servo.attach(SERVO_PIN, 1000, 2000);
-	EEPROM.begin(sizeof(trim_t));
-	servo_trim = servo_trim_load();
+	int i;
+	for (i = 0; i < ARRAY_SIZE(servo_pins); i++)
+		servo[i].attach(servo_pins[i], 1000, 2000);
+	
+	EEPROM.begin(sizeof(trim_store_t));
+	servo_trim_load();
 }
 
 void servo_trim_action(int16_t val)
 {
 	if (val > 0)
-		servo_trim += TRIM_DELTA;
+		servo_trim[0] += TRIM_DELTA;
 	if (val < 0)
-		servo_trim -= TRIM_DELTA;
+		servo_trim[0] -= TRIM_DELTA;
 
-	if (abs(servo_trim) < TRIM_DELTA)
-		servo_trim = 0;
+	if (abs(servo_trim[0]) < TRIM_DELTA)
+		servo_trim[0] = 0;
 
 	if (val != 0)
-		servo_trim_save(servo_trim);
+		servo_trim_save();
 }
